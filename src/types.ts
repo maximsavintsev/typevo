@@ -16,4 +16,5 @@ export interface TypingState {
   wpm: number;
   accuracy: number;
   corrections: number; // backspaced incorrect/extra chars
+  duration: number;
 }

@@ -1,24 +1,26 @@
 :root {
   color-scheme: dark;
-  --bg:              #191A1B;
-  --color-pending:   #848894;
-  --color-correct:   #d1d0c5;
+  --bg: #191A1B;
+  --color-pending: #848894;
+  --color-correct: #d1d0c5;
   --color-incorrect: #ca4754;
-  --color-cursor:    #007aff;
-  --color-hint:      #636366;
-  --color-warning:   #ff9f0a;
-  --line-h:          52px;
+  --color-cursor: #007aff;
+  --color-hint: #636366;
+  --color-warning: #ff9f0a;
+  --line-h: 52px;
 }
 
-$bg:              var(--bg);
-$color-pending:   var(--color-pending);
-$color-correct:   var(--color-correct);
+$bg: var(--bg);
+$color-pending: var(--color-pending);
+$color-correct: var(--color-correct);
 $color-incorrect: var(--color-incorrect);
-$color-cursor:    var(--color-cursor);
-$color-hint:      var(--color-hint);
-$color-warning:   var(--color-warning);
+$color-cursor: var(--color-cursor);
+$color-hint: var(--color-hint);
+$color-warning: var(--color-warning);
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -68,8 +70,11 @@ body {
   align-items: center;
   border-radius: 6px;
   transition: color 0.2s ease;
+  outline: none;
 
-  &:hover { color: $color-correct; }
+  &:hover {
+    color: $color-correct;
+  }
 }
 
 .timer {
@@ -81,10 +86,27 @@ body {
   transition: color 0.4s ease;
   user-select: none;
   -webkit-user-select: none;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
 
-  &[data-idle]    { color: $color-pending; }
-  &[data-warning] { color: $color-warning; }
-  &[data-urgent]  { color: $color-incorrect; }
+
+  &[data-idle] {
+    color: $color-pending;
+  }
+
+  &[data-warning] {
+    color: $color-warning;
+  }
+
+  &[data-urgent] {
+    color: $color-incorrect;
+  }
+
+  &:hover {
+    color: $color-correct;
+  }
 }
 
 .words-container {
@@ -134,8 +156,14 @@ body {
 .char {
   color: $color-pending;
 
-  &--correct   { color: $color-correct; text-shadow: 0 0 8px rgba(209, 208, 197, 0.25); }
-  &--incorrect { color: $color-incorrect; }
+  &--correct {
+    color: $color-correct;
+    text-shadow: 0 0 8px rgba(209, 208, 197, 0.25);
+  }
+
+  &--incorrect {
+    color: $color-incorrect;
+  }
 
 }
 
@@ -155,8 +183,15 @@ body {
 }
 
 @keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
 }
 
 .results {

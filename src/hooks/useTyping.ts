@@ -2,21 +2,23 @@ import { useReducer, useEffect } from 'react';
 import { TypingState, WordState } from '../types';
 import { generateWords } from '../data/words';
 import { computeStats } from '../utils/stats';
-import { TIMER_SECONDS, INITIAL_COUNT, BUFFER_REFILL_AT, BUFFER_ADD, MAX_EXTRA } from '../config';
+import { TIMER_DURATIONS, INITIAL_COUNT, BUFFER_REFILL_AT, BUFFER_ADD, MAX_EXTRA } from '../config';
 
 type Action =
   | { type: 'TYPE'; key: string }
   | { type: 'BACKSPACE' }
   | { type: 'TICK' }
-  | { type: 'NEXT' };
+  | { type: 'NEXT' }
+  | { type: 'CYCLE_DURATION' };
 
-function createState(): TypingState {
+function createState(duration = TIMER_DURATIONS[0]): TypingState {
   return {
     words: generateWords(INITIAL_COUNT),
     wordIdx: 0,
     charIdx: 0,
     startTime: null,
-    timeLeft: TIMER_SECONDS,
+    timeLeft: duration,
+    duration,
     done: false,
     wpm: 0,
     accuracy: 0,
@@ -90,7 +92,7 @@ function reducer(state: TypingState, action: Action): TypingState {
       const newTimeLeft = state.timeLeft - 1;
       if (newTimeLeft <= 0) {
         const { wpm, accuracy } = computeStats(
-          state.words, state.wordIdx, state.charIdx, TIMER_SECONDS * 1000, state.corrections,
+          state.words, state.wordIdx, state.charIdx, state.duration * 1000, state.corrections,
         );
         return { ...state, timeLeft: 0, done: true, wpm, accuracy };
       }
@@ -98,13 +100,21 @@ function reducer(state: TypingState, action: Action): TypingState {
     }
 
     case 'NEXT':
-      return createState();
+      return createState(state.duration);
+
+    case 'CYCLE_DURATION': {
+      if (state.startTime) return state;
+      const idx = TIMER_DURATIONS.indexOf(state.duration);
+      const nextDuration = TIMER_DURATIONS[(idx + 1) % TIMER_DURATIONS.length];
+      return { ...state, duration: nextDuration, timeLeft: nextDuration };
+    }
   }
 }
 
-export function useTyping(): [TypingState, () => void] {
+export function useTyping(): [TypingState, () => void, () => void] {
   const [state, dispatch] = useReducer(reducer, undefined, createState);
   const restart = () => dispatch({ type: 'NEXT' });
+  const cycleDuration = () => dispatch({ type: 'CYCLE_DURATION' });
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -125,5 +135,5 @@ export function useTyping(): [TypingState, () => void] {
     return () => clearInterval(id);
   }, [state.startTime, state.done]);
 
-  return [state, restart];
+  return [state, restart, cycleDuration];
 }
