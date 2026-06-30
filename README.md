@@ -6,7 +6,7 @@ Test it https://typevo.vercel.app/
 
 ## Features
 
-- 30-second timed test
+- Timer with duration selection
 - Accuracy penalizes corrected typos, not just final mistakes
 - Smooth animated caret with pixel-perfect positioning
 - Infinite word buffer — words never run out
